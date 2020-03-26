@@ -1,11 +1,11 @@
 /**
  * This program rolls the dice for the Yahtzee game
  * CPSC 224
- * HW 3
+ * HW 4
  * No sources to cite
  *
  * @author Sami Blevens
- * @version 2/24/20 v3
+ * @version 2/24/20 v4
  */
 import java.util.Random;
 
@@ -14,6 +14,7 @@ public class Dice {
 
     private int totalSides;
     private int sideUp;
+    private boolean isKept;
 
     Dice(int sides){
         totalSides = sides;
@@ -35,5 +36,13 @@ public class Dice {
      */
     public int getSideUp(){
         return sideUp;
+    }
+
+    public void setKept(boolean kept){
+        isKept = kept;
+    }
+
+    public boolean getKept(){
+        return isKept;
     }
 }

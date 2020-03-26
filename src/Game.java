@@ -1,69 +1,99 @@
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
  * This program plays a full game of Yahtzee, and sets the dice configuration
  * CPSC 224
- * HW 3
+ * HW 4
  * No sources to cite
  *
  * @author Sami Blevens
- * @version 2/24/20 v3
+ * @version 2/24/20 v4
  */
 
 public class Game {
-    private static int number_of_sides;
-    private static int number_of_dice;
-    private static int rerollInput;
+    private int number_of_sides;
+    private int number_of_dice;
+    private int rerollInput = 2;
     Scanner scan = new Scanner(System.in);
+    private Window frame;
+    private JFrame configFrame;
+    private ArrayList<Dice> hand = new ArrayList<>();
+    private Turn turn;
+
 
     Game(){
-        System.out.println("Welcome to Yahtzee!\n");
+        frame = new Window("Yahtzee",this);
+        fileRead();
+        turn = new Turn(number_of_dice, number_of_sides, rerollInput);
     }
 
     /**
      * Calls function to deal with dice configuration, then starts the turn
      */
     public void playGame(){
-        boolean again = false;
-        boolean correct;
-        String input;
-        do {
-            fileRead();
-            Turn turn = new Turn(number_of_dice, number_of_sides, rerollInput);
 
-            while (turn.getScorecard().getUnusedScoresList().size() - 1 > 0) {
-                turn.playHand();
-            }
-            System.out.println("Final Score: ");
-            turn.getScorecard().printScorecard();
 
-            correct = false;
-            while(!correct) {
-                System.out.println("Play again? y/n");
-                input = scan.nextLine();
-                if (input.equals("y")) {
-                    again = true;
-                    correct = true;
-                } else if (input.equals("n")) {
-                    System.out.println("Ending game.");
-                    again = false;
-                    correct = true;
-                } else {
-                    System.out.println("wrong input. try again.");
-                    correct = false;
-                }
+            if(turn.getScorecard().getUnusedScoresList().size() - 1 > 0) {
+                System.out.println("starting hand");
+                hand = turn.startHand();
+                System.out.println("displaying in frame");
+                turn.printHand();
+                frame.displayHand(hand);
+            } else {
+                System.out.println("Final Score: ");
+                turn.getScorecard().printScorecard();
+                frame.finishGame();
             }
-        }while(again);
 
     }
+    public void resetReRoll(){
+        rerollInput = 2;
+    }
+    public void chooseScore(String choice){
+        turn.chooseScore(choice);
+    }
+
+    public void scoreHand(){
+        turn.scoreHand();
+    }
+    public void setKeptDice(int die,boolean kept){
+        turn.setKeptDice(die,kept);
+    }
+    public ArrayList<Dice> rollHand() {
+        if (rerollInput > 0) {
+            rerollInput--;
+            frame.decrementRollsLeft();
+            return turn.reRoll();
+        }
+
+        return turn.getHand();
+    }
+
+    public ArrayList<Dice> sortHand(){
+        turn.sortHand();
+        return turn.getHand();
+    }
+
+    public ArrayList<String[]> getPossibleScores(){
+        return turn.getPossibleScores();
+    }
+
+    public void printScorecard(){
+        turn.printScorecard();
+    }
+
 
     /**
      * opens and reads the input file for the number of dice, sides on the dice, and total reRolls allowed
      */
     public void fileRead() {
+
         Scanner scan = new Scanner(System.in);
         Scanner inFile = null;
         File text = new File("yahtzeeConfig.txt");
@@ -77,41 +107,13 @@ public class Game {
             }
             number_of_sides = settings[0];
             number_of_dice = settings[1];
-            rerollInput = (settings[2] - 1);
 
         } catch (FileNotFoundException e) {
             System.out.println("file not found");
             System.exit(1);
         }
 
-        System.out.println("you are playing with " + number_of_dice + " " + number_of_sides +
-                "-sided dice");
-        System.out.println("you get " + (rerollInput+1)  + " rolls per hand\n");
-        System.out.println("enter 'y' if you would like to change the configuration ");
-        String change = scan.nextLine();
-        if(change.equals("y")){
-            try{
-                PrintStream outFile = new PrintStream("yahtzeeConfig.txt");
-
-                System.out.println("enter the number of sides on each die ");
-                number_of_sides = scan.nextInt();
-                outFile.println(number_of_sides);
-
-                System.out.println("enter the number of dice in play ");
-                number_of_dice = scan.nextInt();
-                outFile.println(number_of_dice);
-
-                System.out.println("enter the number of rolls per hand ");
-                rerollInput = scan.nextInt() - 1;
-                outFile.println(rerollInput+1);
-            }
-            catch (FileNotFoundException e){
-                System.out.println("file not found");
-                System.exit(1);
-            }
-        } else {
-            System.out.println("Starting game!");
-        }
-
+        frame.setDisplaySideLabel(number_of_sides);
+        frame.setDisplayDiceLabel((number_of_dice));
     }
 }

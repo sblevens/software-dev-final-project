@@ -1,11 +1,11 @@
 /**
  * This program calculates the possible scores for Yahtzee
  * CPSC 224
- * HW 3
+ * HW 4
  * No sources to cite
  *
  * @author Sami Blevens
- * @version 2/24/20 v3
+ * @version 2/24/20 v4
  */
 import java.util.ArrayList;
 

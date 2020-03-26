@@ -1,11 +1,11 @@
 /**
  * This program creates the hand of dice, determines which dice to reroll, and when to score
  * CPSC 224
- * HW 3
+ * HW 4
  * No sources to cite
  *
  * @author Sami Blevens
- * @version 2/24/20 v3
+ * @version 2/24/20 v4
  */
 import java.util.ArrayList;
 
@@ -27,13 +27,15 @@ public class Hand {
     /**
      * Creates a new hand, ie ArrayList of Dice objects
      */
-    public void newHand(){
+    public ArrayList<Dice> newHand(){
+        clearHand();
         for (int i = 0; i < numberOfDice; i++) {
             hand.add(new Dice(numberOfSides));
         }
         for(Dice d: hand){
             d.setSideUp();
         }
+        return hand;
     }
 
     /**
@@ -69,15 +71,15 @@ public class Hand {
      *  calls the dice class to reroll those dice, and then replaces the integer
      *  in the ArrayList
      *
-     * @param input the string of what dice to keep and which to reroll
      */
-    public void reRoll(String input) {
+    public ArrayList<Dice> reRoll() {
         int location;
         for (location = 0; location < numberOfDice; location++) {
-            if (input.charAt(location) == 'n') {
+            if (!hand.get(location).getKept()) {
                 hand.get(location).setSideUp();
             }
         }
+        return hand;
     }
 
     /**
@@ -95,6 +97,10 @@ public class Hand {
             i++;
         }
         System.out.println();
+    }
+
+    public void setKeptDie(int die, boolean kept){
+        hand.get(die-1).setKept(kept);
     }
 
 }
