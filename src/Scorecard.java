@@ -11,7 +11,7 @@ import java.util.Scanner;
  * No sources to cite
  *
  * @author Sami Blevens
- * @version 2/24/20 v4
+ * @version 3/26/20 v4
  */
 public class Scorecard {
     private int sides;
@@ -118,8 +118,10 @@ public class Scorecard {
     }
 
     /**
-     * Prints the possible scores for the player to choose from based on the
+     * Sets the possible scores for the player to choose from based on the
      * unused scorecard lines ArrayList
+     * @return unusedScoresList the arraylist of the unused scores
+     *
      */
     public ArrayList<String[]> printPossibleScores() {
         //line 316 in python yahtzee
@@ -171,11 +173,13 @@ public class Scorecard {
                 }
             }
         }
+        /*
         System.out.println("Scoring Options: ");
         for (int i = 0; i < unusedScoresList.size(); i++) {
             System.out.println("score is " + unusedScoresList.get(i)[3] +
                     " if you choose the " + unusedScoresList.get(i)[0] + " line");
         }
+        */
 
         return unusedScoresList;
     }
@@ -187,7 +191,7 @@ public class Scorecard {
     public void chooseScore(String choice){
         String scoreOfChoice;
         scoreOfChoice = "";
-        System.out.println(choice);
+        //System.out.println(choice);
 
 
         for(int i=0; i<unusedScoresList.size();i++){
@@ -202,7 +206,7 @@ public class Scorecard {
             }
         }
         writeScorecard();
-        System.out.println("wrote scorecard");
+        //System.out.println("wrote scorecard");
     }
 
     /**
@@ -224,7 +228,7 @@ public class Scorecard {
 
 
     /**
-     * prints the scorecard board to the terminal
+     * prints the scorecard board to an output file
      */
     public void printScorecard(){
         try{

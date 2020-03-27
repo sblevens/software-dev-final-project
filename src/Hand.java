@@ -1,11 +1,11 @@
 /**
- * This program creates the hand of dice, determines which dice to reroll, and when to score
+ * This program creates the hand of dice, determines which dice to reroll
  * CPSC 224
  * HW 4
  * No sources to cite
  *
  * @author Sami Blevens
- * @version 2/24/20 v4
+ * @version 3/26/20 v4
  */
 import java.util.ArrayList;
 
@@ -20,6 +20,10 @@ public class Hand {
         hand = new ArrayList<>();
     }
 
+    /**
+     * returns the arraylist of the hand of dice
+     * @return hand the arraylist of the hand
+     */
     public ArrayList<Dice> getHand(){
         return hand;
     }
@@ -31,6 +35,7 @@ public class Hand {
         clearHand();
         for (int i = 0; i < numberOfDice; i++) {
             hand.add(new Dice(numberOfSides));
+            hand.get(i).setKept(false);
         }
         for(Dice d: hand){
             d.setSideUp();
@@ -82,23 +87,12 @@ public class Hand {
         return hand;
     }
 
-    /**
-     * Prints the ArrayList of the current hand
-     */
-    public void printHand(){
-        int i = 0;
-        System.out.print("Roll: {");
-        for(Dice dice: hand){
-            System.out.print(dice.getSideUp());
-            if(i<hand.size()-1)
-                System.out.print(", ");
-            else
-                System.out.print("}");
-            i++;
-        }
-        System.out.println();
-    }
 
+    /**
+     * uses the die class to set the kept value of the die
+     * @param die index of die
+     * @param kept true or false, whether the die is kept or not
+     */
     public void setKeptDie(int die, boolean kept){
         hand.get(die-1).setKept(kept);
     }

@@ -1,12 +1,12 @@
 /**
- * This program plays one turn of Yahtzee, plays a hand, asks to prints out possible scores and
- * asks to record the choosen score
+ * This program plays one turn of Yahtzee, plays a hand, calculates possible scores and
+ * records the choosen score
  * CPSC 224
  * HW 4
  * No sources to cite
  *
  * @author Sami Blevens
- * @version 2/24/20 v4
+ * @version 3/26/20 v4
  */
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -27,15 +27,11 @@ public class Turn {
         this.number_of_dice = number_of_dice;
         this.number_of_sides = number_of_sides;
         this.rerollInput = rerollInput;
-        System.out.println("New hand");
+        //System.out.println("New hand");
         hand = new Hand(number_of_dice, number_of_sides);
         Calculator calculator = new Calculator(hand.getHand(), number_of_dice, number_of_sides);
         scorecard = new Scorecard(number_of_sides,calculator);
         reRoll = rerollInput;
-    }
-
-    public void printHand(){
-        hand.printHand();
     }
 
     /**
@@ -50,33 +46,40 @@ public class Turn {
         return theHand;
     }
 
-    public void scoreHand(){
-        //print scores
-        System.out.print("Final ");
-        hand.printHand();
-
-        //scorecard.printPossibleScores();
-        //scorecard.chooseScore();
-
-    }
-
-
+    /**
+     * calls on the hand class to sort the hand
+     */
     public void sortHand(){
         hand.sortHand();
     }
 
+    /**
+     * gets and returns the arraylist of possible score options
+     * @return possible scores ; the arraylist of possible score options
+     */
     public ArrayList<String[]> getPossibleScores(){
         return scorecard.printPossibleScores();
     }
 
+    /**
+     * calls on the scorecard to record the choice of score
+     * @param choice string of the section that the score will be placed in
+     */
     public void chooseScore(String choice){
         scorecard.chooseScore(choice);
     }
 
+    /**
+     * calls on the scorecard class to set the scorcard
+     */
     public void printScorecard(){
         scorecard.printScorecard();
     }
 
+    /**
+     * gets the hand from the hand class, and returns it
+     * @return hand the arraylist of the hand
+     */
     public ArrayList<Dice> getHand(){
         return hand.getHand();
     }
@@ -94,10 +97,15 @@ public class Turn {
      */
     public ArrayList<Dice> reRoll(){
         die = hand.reRoll();
-        hand.printHand();
+        //hand.printHand();
         return die;
     }
 
+    /**
+     * calls on the hand class to set the kept value of the die
+     * @param die index of the die value
+     * @param kept true or false value of whether or not the dice is kept
+     */
     public void setKeptDice(int die,boolean kept){
         hand.setKeptDie(die,kept);
     }

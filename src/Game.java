@@ -13,7 +13,7 @@ import java.util.Scanner;
  * No sources to cite
  *
  * @author Sami Blevens
- * @version 2/24/20 v4
+ * @version 3/26/20 v4
  */
 
 public class Game {
@@ -25,46 +25,69 @@ public class Game {
     private JFrame configFrame;
     private ArrayList<Dice> hand = new ArrayList<>();
     private Turn turn;
+    private boolean firstTurn = true;
 
 
     Game(){
         frame = new Window("Yahtzee",this);
         fileRead();
-        turn = new Turn(number_of_dice, number_of_sides, rerollInput);
     }
 
     /**
      * Calls function to deal with dice configuration, then starts the turn
      */
     public void playGame(){
-
-
+        if(firstTurn){
+            turn = new Turn(number_of_dice, number_of_sides, rerollInput);
+            firstTurn = false;
+        }
             if(turn.getScorecard().getUnusedScoresList().size() - 1 > 0) {
-                System.out.println("starting hand");
+                //System.out.println("starting hand");
                 hand = turn.startHand();
-                System.out.println("displaying in frame");
-                turn.printHand();
+                //System.out.println("displaying in frame");
+                //turn.printHand();
                 frame.displayHand(hand);
             } else {
-                System.out.println("Final Score: ");
+                //System.out.println("Final Score: ");
                 turn.getScorecard().printScorecard();
                 frame.finishGame();
             }
 
     }
+
+    /**
+     * resets the number of rolls left for when a new turn is starting
+     */
     public void resetReRoll(){
         rerollInput = 2;
     }
+
+    /**
+     * calls the turn class to select the section for where to place the score
+     * @param choice the section for what score is chosen to place on the scorecard
+     */
     public void chooseScore(String choice){
         turn.chooseScore(choice);
     }
 
-    public void scoreHand(){
-        turn.scoreHand();
+    public ArrayList<Dice> getHand(){
+        return turn.getHand();
     }
+
+
+    /**
+     * sets the die to kept or not
+     * @param die the index of the die to set
+     * @param kept true or false for whether the die is set to kept or not kept
+     */
     public void setKeptDice(int die,boolean kept){
         turn.setKeptDice(die,kept);
     }
+
+    /**
+     * calls the turn class to roll the hand, and figures out if there are rolls left
+     * @return hand the hand, after a roll if there are rolls left, or returns the same hand if no rolls are left
+     */
     public ArrayList<Dice> rollHand() {
         if (rerollInput > 0) {
             rerollInput--;
@@ -75,15 +98,26 @@ public class Game {
         return turn.getHand();
     }
 
+    /**
+     * calls the turn class to sort the hand
+     * @return hand the sorted hand of dice
+     */
     public ArrayList<Dice> sortHand(){
         turn.sortHand();
         return turn.getHand();
     }
 
+    /**
+     * calls the turn class to get the arraylist of possible scores, and gives them to the window class
+     * @return ususedScoresList the arraylist of the unused scores
+     */
     public ArrayList<String[]> getPossibleScores(){
         return turn.getPossibleScores();
     }
 
+    /**
+     * Calls the turn class to print the scorecard
+     */
     public void printScorecard(){
         turn.printScorecard();
     }

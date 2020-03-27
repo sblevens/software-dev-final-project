@@ -1,4 +1,13 @@
-import javax.sound.sampled.Line;
+/**
+ * This program displays a full game of Yahtzee with the gui
+ *  * CPSC 224
+ *  * HW 4
+ *  * No sources to cite
+ *  *
+ *  * @author Sami Blevens
+ *  * @version 3/26/20 v4
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -38,6 +47,7 @@ public class Window extends JFrame{
     private int rollsLeft = 3;
     private int numOfDice;
     private JButton ok = new JButton("ok");
+    private boolean gameover = false;
 
     ImageIcon diceImage;
     Image img;
@@ -89,6 +99,7 @@ public class Window extends JFrame{
 
                     outFile.println(Integer.parseInt(sides.getSelectedItem().toString()));
                     outFile.println(Integer.parseInt(dice.getSelectedItem().toString()));
+                    game.fileRead();
                 }
                 catch (FileNotFoundException exception){
                     System.out.println("file not found");
@@ -159,24 +170,46 @@ public class Window extends JFrame{
         });
     }
 
+    /**
+     * shows the number of dice playing with on the screen
+     * @param num the number of dice playing with
+     */
     public void setDisplayDiceLabel(int num) {
         this.displayDiceLabel.setText(Integer.toString(num));
     }
+
+    /**
+     * returns the number of dice playing with
+     * @return the number of dice playing with
+     */
     public String getDisplayDiceLabel(){
         return this.displayDiceLabel.getText();
     }
+
+    /**
+     * displays the number of sides on the dice playing with
+     * @param num the number of sides on the dice playing with
+     */
     public void setDisplaySideLabel(int num){
         this.displaySideLabel.setText(Integer.toString(num));
     }
 
+    /**
+     * calls on the game class to create a new hand
+     */
     public void createHand(){
         if(!playing) {
             playing = true;
-            System.out.println("creating a hand");
+            //System.out.println("creating a hand");
             game.playGame();
         }
+        checkKept();
     }
 
+    /**
+     * displays the arraylist hand as images of dice
+     * @param hand the arraylist of the hand
+     */
     public void displayHand(ArrayList<Dice> hand){
         int numOfDice = Integer.parseInt(getDisplayDiceLabel());
         if(numOfDice >= 5){
@@ -207,24 +240,26 @@ public class Window extends JFrame{
         checkKept();
     }
 
-ArrayList<Dice> newRoll;
+    ArrayList<Dice> newRoll;
 
+    /**
+     * rolls the hand, and displays the hand
+     */
     public void rollHand(){
         newRoll = game.rollHand();
-        if(rollsLeft == 0 ) {
-            for (int i = 1; i < numOfDice + 1; i++) {
-                game.setKeptDice(i, false);
-            }
-            checkKept();
+        if(rollsLeft==0) {
             displayHand(newRoll);
-
             possibleScores();
-        } else if(rollsLeft>0){
+        }
+        if(rollsLeft>0){
             displayHand(newRoll);
         }
         rollsLeft--;
     }
 
+    /**
+     * displays possible scores and lets you choose your score
+     */
     public void possibleScores(){
         ArrayList<String[]> unusedScoreList = new ArrayList<String[]>();
         JLabel label;
@@ -232,7 +267,7 @@ ArrayList<Dice> newRoll;
         unusedScoreList = game.getPossibleScores();
 
         rightPanel = new JPanel(new GridBagLayout());
-        System.out.println("displaying possible scores");
+        //System.out.println("displaying possible scores");
         GridBagConstraints c = new GridBagConstraints();
         for(int i = 0; i<unusedScoreList.size(); i++) {
             label = new JLabel(unusedScoreList.get(i)[0]+":  ");
@@ -254,7 +289,7 @@ ArrayList<Dice> newRoll;
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     game.chooseScore(btn.getText());
-                    System.out.println(btn.getText());
+                    //System.out.println(btn.getText());
                     reset();
                 }
             });
@@ -264,14 +299,22 @@ ArrayList<Dice> newRoll;
         rightPanel.setVisible(true);
         pack();
 
-        game.scoreHand();
+        //game.scoreHand();
     }
 
+    /**
+     * displays a final message, and stops the rolls from being able to be rolled
+     */
     public void finishGame(){
         middlePanel.removeAll();
         middlePanel.add(new JLabel("You finished the game!"));
+        gameover = true;
+        rollsLeft=-1;
     }
 
+    /**
+     * resets the variables to run another turn
+     */
     public void reset(){
         playing = false;
         rollsLeft = 3;
@@ -280,8 +323,17 @@ ArrayList<Dice> newRoll;
         createHand();
     }
 
+    /**
+     * checks whether or not a die is clicked, and checks wether or not the die is set to kept
+     * uses this information to determine whether or not to place a red border around the dice
+     */
     public void checkKept(){
+
         numOfDice = Integer.parseInt(getDisplayDiceLabel());
+        if(game.getHand().get(0).getKept() == false)
+        {
+            die1.setBorder((null));
+        }
         die1.addMouseListener(new MouseListener() {
             boolean clicked = false;
             @Override
@@ -317,6 +369,10 @@ ArrayList<Dice> newRoll;
 
             }
         });
+        if(game.getHand().get(1).getKept() == false)
+        {
+            die2.setBorder((null));
+        }
         die2.addMouseListener(new MouseListener() {
             boolean clicked = false;
             @Override
@@ -352,6 +408,10 @@ ArrayList<Dice> newRoll;
 
             }
         });
+        if(game.getHand().get(2).getKept() == false)
+        {
+            die3.setBorder((null));
+        }
         die3.addMouseListener(new MouseListener() {
             boolean clicked = false;
             @Override
@@ -387,6 +447,10 @@ ArrayList<Dice> newRoll;
 
             }
         });
+        if(game.getHand().get(3).getKept() == false)
+        {
+            die4.setBorder((null));
+        }
         die4.addMouseListener(new MouseListener() {
             boolean clicked = false;
             @Override
@@ -422,6 +486,10 @@ ArrayList<Dice> newRoll;
 
             }
         });
+        if(game.getHand().get(4).getKept() == false)
+        {
+            die5.setBorder((null));
+        }
         die5.addMouseListener(new MouseListener() {
             boolean clicked = false;
             @Override
@@ -458,6 +526,10 @@ ArrayList<Dice> newRoll;
             }
         });
         if(numOfDice>=6) {
+            if(game.getHand().get(5).getKept() == false)
+            {
+                die6.setBorder((null));
+            }
             die6.addMouseListener(new MouseListener() {
                 boolean clicked = false;
 
@@ -496,6 +568,10 @@ ArrayList<Dice> newRoll;
             });
         }
         if(numOfDice==7) {
+            if(game.getHand().get(6).getKept() == false)
+            {
+                die7.setBorder((null));
+            }
             die7.addMouseListener(new MouseListener() {
                 boolean clicked = false;
 
@@ -535,6 +611,9 @@ ArrayList<Dice> newRoll;
         }
     }
 
+    /**
+     * decrements the number of rolls left
+     */
     public void decrementRollsLeft(){
         rollsLeft--;
     }
